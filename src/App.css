@@ -1,0 +1,139 @@
+
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  background: transparent !important;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+  background: transparent !important;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Enhanced transparency for all components */
+.container, .main-content, .page-content, 
+div[class*="bg-"], div[class*="background"], 
+.card, .popup, .dialog, .modal {
+  background: transparent !important;
+}
+
+/* Add global styles for glass morphism */
+body {
+  background: linear-gradient(to right, #dfd6c8, #e8d5c4) !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Glass morphism effect for cards and containers */
+.glass-morphism {
+  background: rgba(232, 213, 196, 0.8) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Button styling similar to the image */
+button[class*="bg-[#e8d5c4]"] {
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #e8d5c4 !important;
+  opacity: 1 !important;
+}
+
+button[class*="bg-[#e8d5c4]"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: #dcc7b7 !important;
+}
+
+/* Make tabs styling match */
+[data-state="active"] {
+  background-color: rgba(232, 213, 196, 1) !important;
+  color: #403E43 !important;
+}
+
+[data-radix-popper-content-wrapper] {
+  background: transparent !important;
+}
+
+/* Ensure select content and dropdown menus are properly styled */
+.select-content,
+[data-radix-select-content],
+.dropdown-content,
+[data-radix-dropdown-menu-content] {
+  background-color: rgba(232, 213, 196, 1) !important;
+  backdrop-filter: blur(10px) !important;
+  color: #403E43 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Ensure dropdown items have proper hover/focus states */
+[data-radix-select-item]:hover,
+[data-radix-select-item]:focus,
+[data-radix-dropdown-menu-item]:hover,
+[data-radix-dropdown-menu-item]:focus {
+  background-color: #dcc7b7 !important;
+}
+
+/* Fix for select content and dropdown backgrounds */
+div[role="listbox"],
+div[role="menu"],
+[role="dialog"].radix-dropdown-content,
+[role="dialog"].radix-select-content {
+  background-color: #e8d5c4 !important;
+  color: #403E43 !important;
+}
+
+/* Styling for dropdown trigger elements when opened */
+[data-state="open"].select-trigger,
+[data-state="open"].dropdown-trigger,
+button[data-state="open"],
+div[data-state="open"] {
+  background-color: #dcc7b7 !important;
+  color: #403E43 !important;
+}
+
+/* Ensure the trigger changes color when the dropdown is open */
+[data-radix-select-trigger][data-state="open"],
+[data-radix-dropdown-menu-trigger][data-state="open"] {
+  background-color: #dcc7b7 !important;
+  color: #403E43 !important;
+}

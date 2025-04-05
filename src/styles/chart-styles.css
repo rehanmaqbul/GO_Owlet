@@ -1,0 +1,19 @@
+/* Global chart styles */
+.recharts-pie-label-text {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+}
+
+.recharts-legend-item-text {
+  font-size: 12px !important;
+}
+
+/* Make tooltip text smaller */
+.recharts-tooltip-wrapper {
+  font-size: 11px !important;
+}
+
+/* Adjust other chart elements */
+.recharts-text {
+  font-size: 11px !important;
+} 

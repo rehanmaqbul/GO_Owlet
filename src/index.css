@@ -1,0 +1,156 @@
+/* Load Inter font */
+@import url('https://rsms.me/inter/inter.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 50% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 216 100% 61%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 216 100% 97%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 216 100% 61%;
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html, body {
+    height: 100%;
+    width: 100%;
+    @apply antialiased;
+  }
+  
+  body {
+    @apply text-foreground font-sans;
+    background: linear-gradient(to top left, #E6B187, #D5D7D4) !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
+  
+  #root {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium tracking-tight;
+  }
+  
+  h1 {
+    @apply text-3xl sm:text-4xl md:text-5xl;
+  }
+  
+  h2 {
+    @apply text-2xl sm:text-3xl md:text-4xl;
+  }
+  
+  h3 {
+    @apply text-xl sm:text-2xl md:text-3xl;
+  }
+  
+  /* Glass morphism styles - make everything more transparent */
+  .glass {
+    @apply bg-white/20 backdrop-blur-md border border-white/20 !important;
+  }
+  
+  /* All card-like containers should use glass morphism */
+  .bg-white, .bg-card, .bg-background {
+    @apply bg-white/20 backdrop-blur-md !important;
+  }
+  
+  /* Dashboard cards should be transparent */
+  .dashboard-card {
+    @apply bg-[#e8d5c4] backdrop-blur-md border border-white/20 !important;
+  }
+  
+  /* Section backgrounds should be very transparent */
+  .section-bg {
+    @apply bg-transparent backdrop-blur-sm !important;
+  }
+  
+  /* Smooth transitions for all interactive elements */
+  button, a, input, select, textarea {
+    @apply transition-all duration-200;
+  }
+  
+  /* Page transitions */
+  .page-enter {
+    @apply opacity-0;
+  }
+  
+  .page-enter-active {
+    @apply opacity-100 transition-opacity duration-300;
+  }
+  
+  .page-exit {
+    @apply opacity-100;
+  }
+  
+  .page-exit-active {
+    @apply opacity-0 transition-opacity duration-200;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-owl-slate/30 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-owl-slate/50;
+}
+
+/* Force all backgrounds to be transparent */
+div, section, main, aside, header, footer, nav {
+  background-color: transparent !important;
+}
+
+/* Fix specifically for cards and popups to use glass effect */
+.card, [role="dialog"], .popover, .dropdown-content {
+  @apply bg-[#e8d5c4] backdrop-blur-md border border-white/20 !important;
+}
