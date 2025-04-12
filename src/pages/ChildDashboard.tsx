@@ -216,7 +216,7 @@ const ChildDashboard = () => {
 
   // Task card component for consistent display
   const TaskCard = ({ task }: { task: typeof mockDashboardTasks[0] }) => {
-    return (
+  return (
       <Card 
         key={task.id} 
         className={`border ${task.completed ? 'border-green-200 bg-green-50' : 'border-amber-200 bg-amber-50'} shadow-sm hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1`}

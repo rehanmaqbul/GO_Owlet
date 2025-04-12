@@ -4,6 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/auth";
 import { AppRouter } from "./routes/AppRouter";
+import ViewSubmissionsPage from './pages/ViewSubmissionsPage';
+import EditDeadlinePage from './pages/EditDeadlinePage';
+import SendReminderPage from './pages/SendReminderPage';
 
 // Add Google Fonts link to the head of the document
 const addGoogleFonts = () => {

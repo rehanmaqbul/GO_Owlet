@@ -73,7 +73,7 @@ export const TeacherActionButtons = () => {
     {
       id: 4,
       label: 'Resources',
-      path: '/resources',
+      path: '/parent-resources',
       icon: BookOpen,
       color: 'from-amber-500 to-amber-700',
       description: 'Educational materials'

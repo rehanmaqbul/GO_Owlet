@@ -1,27 +1,63 @@
-import { RouteObject } from "react-router-dom";
+import { lazy, Suspense } from 'react';
+import { RouteObject, Routes, Route } from "react-router-dom";
 import { PrivateRoute } from "@/components/PrivateRoute";
-import AdminDashboard from "@/pages/AdminDashboard";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
 import Questions from "@/pages/Questions";
 import Resources from "@/pages/Resources";
 import BulkUpload from "@/pages/BulkUpload";
 import BulkUploadType from "@/pages/BulkUploadType";
-import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminTeachers from "@/pages/admin/AdminTeachers";
-import AdminContent from "@/pages/admin/AdminContent";
 import AdminSchools from "@/pages/admin/AdminSchools";
 import AdminSettings from "@/pages/admin/AdminSettings";
-import AdminAnalytics from "@/pages/admin/AdminAnalytics";
 import AdminLogs from "@/pages/admin/AdminLogs";
 import AdminSecurity from "@/pages/admin/AdminSecurity";
 import AdminNewSchool from "@/pages/admin/AdminNewSchool";
+import BulkUserUpload from "@/pages/admin/BulkUserUpload";
+import CheckUsers from "@/pages/admin/CheckUsers";
+import { Loader2 } from 'lucide-react';
+import SchoolDashboard from '@/pages/school/SchoolDashboard';
+import TeacherDashboard from '@/pages/teacher/TeacherDashboard';
+import SchoolTeachers from '@/pages/school/teachers';
+import SchoolStudents from '@/pages/school/students';
+import SchoolClasses from '@/pages/school/classes';
+import SchoolReports from '@/pages/school/reports';
+import SchoolSettings from '@/pages/school/settings';
+
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+  </div>
+);
+
+// Lazy loaded components wrapped with Suspense
+const AdminAnalytics = lazy(() => import('@/pages/admin/AdminAnalytics'));
+const AdminContent = lazy(() => import('@/pages/admin/AdminContent'));
+const AdminUsers = lazy(() => import('@/pages/admin/AdminUsers'));
+const NewTeacher = lazy(() => import('@/pages/admin/teachers/new'));
+const NewUser = lazy(() => import('@/pages/admin/users/new'));
+
+// Wrap lazy components with Suspense
+const withSuspense = (Component: React.ComponentType) => (
+  <Suspense fallback={<LoadingSpinner />}>
+    <Component />
+  </Suspense>
+);
 
 export const adminRoutes: RouteObject[] = [
   // Protected routes - Admin
   {
-    path: "/admin-dashboard",
+    path: "/admin",
     element: (
       <PrivateRoute allowedRoles={['admin']}>
         <AdminDashboard />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/admin/check-users",
+    element: (
+      <PrivateRoute allowedRoles={['admin']}>
+        <CheckUsers />
       </PrivateRoute>
     )
   },
@@ -62,7 +98,23 @@ export const adminRoutes: RouteObject[] = [
     path: "/admin/users",
     element: (
       <PrivateRoute allowedRoles={['admin']}>
-        <AdminUsers />
+        {withSuspense(AdminUsers)}
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/admin/users/new",
+    element: (
+      <PrivateRoute allowedRoles={['admin']}>
+        {withSuspense(NewUser)}
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/admin/users/bulk-upload",
+    element: (
+      <PrivateRoute allowedRoles={['admin']}>
+        <BulkUserUpload />
       </PrivateRoute>
     )
   },
@@ -78,7 +130,7 @@ export const adminRoutes: RouteObject[] = [
     path: "/admin/content",
     element: (
       <PrivateRoute allowedRoles={['admin']}>
-        <AdminContent />
+        {withSuspense(AdminContent)}
       </PrivateRoute>
     )
   },
@@ -110,7 +162,7 @@ export const adminRoutes: RouteObject[] = [
     path: "/admin/analytics",
     element: (
       <PrivateRoute allowedRoles={['admin']}>
-        <AdminAnalytics />
+        {withSuspense(AdminAnalytics)}
       </PrivateRoute>
     )
   },
@@ -129,5 +181,79 @@ export const adminRoutes: RouteObject[] = [
         <AdminSecurity />
       </PrivateRoute>
     )
+  },
+  {
+    path: "/admin/teachers/new",
+    element: (
+      <PrivateRoute allowedRoles={['admin']}>
+        {withSuspense(NewTeacher)}
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/school",
+    element: (
+      <PrivateRoute allowedRoles={['school_admin']}>
+        <SchoolDashboard />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/teacher-dashboard",
+    element: (
+      <PrivateRoute allowedRoles={['teacher']}>
+        <TeacherDashboard />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/school/teachers",
+    element: (
+      <PrivateRoute allowedRoles={['school_admin']}>
+        <SchoolTeachers />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/school/students",
+    element: (
+      <PrivateRoute allowedRoles={['school_admin']}>
+        <SchoolStudents />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/school/classes",
+    element: (
+      <PrivateRoute allowedRoles={['school_admin']}>
+        <SchoolClasses />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/school/reports",
+    element: (
+      <PrivateRoute allowedRoles={['school_admin']}>
+        <SchoolReports />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/school/settings",
+    element: (
+      <PrivateRoute allowedRoles={['school_admin']}>
+        <SchoolSettings />
+      </PrivateRoute>
+    )
   }
 ];
+
+export default function AdminRoutes() {
+  return (
+    <Routes>
+      {adminRoutes.map((route, index) => (
+        <Route key={index} path={route.path} element={route.element} />
+      ))}
+    </Routes>
+  );
+}

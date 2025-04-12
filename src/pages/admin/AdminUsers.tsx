@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   PanelTop, 
@@ -10,7 +10,9 @@ import {
   Trash2, 
   Edit, 
   UserX, 
-  UserCheck 
+  UserCheck,
+  Loader2,
+  Upload
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -30,18 +32,11 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-
-// Mock data for users
-const mockUsers = [
-  { id: 1, name: 'John Smith', email: 'john.smith@example.com', role: 'teacher', status: 'active', lastLogin: '2 hours ago' },
-  { id: 2, name: 'Sarah Johnson', email: 'sarah.j@example.com', role: 'parent', status: 'active', lastLogin: '1 day ago' },
-  { id: 3, name: 'Michael Brown', email: 'michael.b@example.com', role: 'admin', status: 'active', lastLogin: '3 days ago' },
-  { id: 4, name: 'Emma Wilson', email: 'emma.w@example.com', role: 'teacher', status: 'inactive', lastLogin: '2 weeks ago' },
-  { id: 5, name: 'James Davis', email: 'james.d@example.com', role: 'parent', status: 'active', lastLogin: '5 hours ago' },
-  { id: 6, name: 'Olivia Martin', email: 'olivia.m@example.com', role: 'teacher', status: 'pending', lastLogin: 'Never' },
-  { id: 7, name: 'William Garcia', email: 'william.g@example.com', role: 'child', status: 'active', lastLogin: '1 week ago' },
-  { id: 8, name: 'Sophie Miller', email: 'sophie.m@example.com', role: 'parent', status: 'active', lastLogin: '1 day ago' }
-];
+import { adminUsersService, User, logActivity } from '@/services/admin/adminService';
+import { useAuth } from '@/contexts/auth';
+import { Badge } from '@/components/ui/badge';
+import { format, formatDistanceToNow } from 'date-fns';
+import { toast } from '@/components/ui/use-toast';
 
 const getRoleColor = (role: string) => {
   switch (role) {
@@ -73,12 +68,36 @@ const getStatusColor = (status: string) => {
 
 const AdminUsers = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [processingUser, setProcessingUser] = useState<string | null>(null);
   
+  // Fetch users from the database
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await adminUsersService.getUsers();
+        setUsers(data);
+      } catch (err) {
+        console.error('Error fetching users:', err);
+        setError('Failed to load users. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   // Filter users based on search term and filters
-  const filteredUsers = mockUsers.filter(user => {
+  const filteredUsers = users.filter(user => {
     const matchesSearch = 
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -88,6 +107,90 @@ const AdminUsers = () => {
     
     return matchesSearch && matchesRole && matchesStatus;
   });
+
+  // Handle user status update
+  const handleToggleUserStatus = async (userId: string, currentStatus: string) => {
+    try {
+      setProcessingUser(userId);
+      
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+      
+      await adminUsersService.updateUser(userId, { status: newStatus });
+      
+      // Update local state
+      setUsers(prevUsers => 
+        prevUsers.map(u => 
+          u.id === userId ? { ...u, status: newStatus } : u
+        )
+      );
+      
+      // Log activity
+      await logActivity(
+        user?.id || null,
+        'update',
+        `${currentStatus === 'active' ? 'Deactivated' : 'Activated'} user account`,
+        'user',
+        userId
+      );
+      
+      toast({
+        title: 'User updated successfully',
+        description: `User has been ${newStatus === 'active' ? 'activated' : 'deactivated'}.`,
+        variant: 'default'
+      });
+    } catch (err) {
+      console.error('Error updating user:', err);
+      toast({
+        title: 'Error updating user',
+        description: 'An error occurred while updating the user status.',
+        variant: 'destructive'
+      });
+    } finally {
+      setProcessingUser(null);
+    }
+  };
+
+  // Handle user deletion
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    const confirmed = window.confirm(`Are you sure you want to delete user ${userName}? This action cannot be undone.`);
+    
+    if (confirmed) {
+      try {
+        setProcessingUser(userId);
+        
+        await adminUsersService.deleteUser(userId);
+        
+        // Update local state
+        setUsers(prevUsers => 
+          prevUsers.filter(u => u.id !== userId)
+        );
+        
+        // Log activity
+        await logActivity(
+          user?.id || null,
+          'delete',
+          `Deleted user account: ${userName}`,
+          'user',
+          userId
+        );
+        
+        toast({
+          title: 'User deleted successfully',
+          description: `User ${userName} has been deleted.`,
+          variant: 'default'
+        });
+      } catch (err) {
+        console.error('Error deleting user:', err);
+        toast({
+          title: 'Error deleting user',
+          description: 'An error occurred while deleting the user.',
+          variant: 'destructive'
+        });
+      } finally {
+        setProcessingUser(null);
+      }
+    }
+  };
   
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -108,11 +211,24 @@ const AdminUsers = () => {
               <p className="text-gray-500">Manage system users and permissions</p>
             </div>
           </div>
-          <Button onClick={() => navigate('/admin/users/new')} className="bg-blue-600 hover:bg-blue-700">
-            <UserPlus className="h-4 w-4 mr-2" />
-            Add User
-          </Button>
+          <div className="flex gap-3">
+            <Button onClick={() => navigate('/admin/users/bulk-upload')} variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
+              <Upload className="h-4 w-4 mr-2" />
+              Bulk Upload
+            </Button>
+            <Button onClick={() => navigate('/admin/users/new')} className="bg-blue-600 hover:bg-blue-700">
+              <UserPlus className="h-4 w-4 mr-2" />
+              Add User
+            </Button>
+          </div>
         </div>
+        
+        {/* Error message */}
+        {error && (
+          <Card className="p-4 mb-6 bg-red-50 border-red-200 text-red-800">
+            <p>{error}</p>
+          </Card>
+        )}
         
         {/* Filters */}
         <Card className="p-5 mb-6">
@@ -171,7 +287,15 @@ const AdminUsers = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredUsers.length > 0 ? (
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="h-24 text-center">
+                      <div className="flex justify-center">
+                        <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : filteredUsers.length > 0 ? (
                   filteredUsers.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">{user.name}</TableCell>
@@ -186,7 +310,11 @@ const AdminUsers = () => {
                           {user.status}
                         </div>
                       </TableCell>
-                      <TableCell>{user.lastLogin}</TableCell>
+                      <TableCell>
+                        {user.last_login 
+                          ? formatDistanceToNow(new Date(user.last_login), { addSuffix: true })
+                          : 'Never'}
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Button 
@@ -194,6 +322,7 @@ const AdminUsers = () => {
                             size="icon" 
                             onClick={() => navigate(`/admin/users/${user.id}`)}
                             className="h-8 w-8"
+                            disabled={processingUser === user.id}
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -202,27 +331,42 @@ const AdminUsers = () => {
                               variant="ghost" 
                               size="icon" 
                               className="h-8 w-8 text-amber-500 hover:text-amber-600 hover:bg-amber-50"
-                              onClick={() => console.log('Deactivate user', user.id)}
+                              onClick={() => handleToggleUserStatus(user.id, user.status)}
+                              disabled={processingUser === user.id}
                             >
-                              <UserX className="h-4 w-4" />
+                              {processingUser === user.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <UserX className="h-4 w-4" />
+                              )}
                             </Button>
                           ) : (
                             <Button 
                               variant="ghost" 
                               size="icon" 
                               className="h-8 w-8 text-green-500 hover:text-green-600 hover:bg-green-50"
-                              onClick={() => console.log('Activate user', user.id)}
+                              onClick={() => handleToggleUserStatus(user.id, user.status)}
+                              disabled={processingUser === user.id}
                             >
-                              <UserCheck className="h-4 w-4" />
+                              {processingUser === user.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <UserCheck className="h-4 w-4" />
+                              )}
                             </Button>
                           )}
                           <Button 
                             variant="ghost" 
                             size="icon" 
                             className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
-                            onClick={() => console.log('Delete user', user.id)}
+                            onClick={() => handleDeleteUser(user.id, user.name)}
+                            disabled={processingUser === user.id}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            {processingUser === user.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )}
                           </Button>
                         </div>
                       </TableCell>

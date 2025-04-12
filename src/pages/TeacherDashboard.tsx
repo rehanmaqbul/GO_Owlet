@@ -170,12 +170,12 @@ const TeacherDashboard = () => {
         <SidebarNavItem 
           icon={<BookOpen size={18} className="mr-2" />}
           label="Resources"
-          onClick={() => navigateTo('/resources')}
+          onClick={() => navigateTo('/parent-resources')}
         />
         <SidebarNavItem 
           icon={<MessageCircle size={18} className="mr-2" />}
           label="Messages"
-          onClick={() => navigateTo('/messages')}
+          onClick={() => navigateTo('/teacher-messages')}
         />
       </SidebarSection>
       
@@ -241,51 +241,47 @@ const TeacherDashboard = () => {
       headerContent={headerContent}
       logoIcon={<GraduationCap size={18} />}
     >
-      {/* Action cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Action Cards */}
+      <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <ActionCard
           title="Create Task"
-          description="Create new assignments for students"
+          description="Create and assign new tasks to your students"
           icon={ListChecks}
-          buttonText="New Task"
-          buttonIcon={<Plus className="h-4 w-4 mr-2" />}
-          onClick={() => navigateTo('/create-task')}
+          buttonText="Create and Schedule Task"
+          onClick={() => navigateTo('/teacher-create-task')}
         />
         
         <ActionCard
-          title="Manage Classes"
-          description="Create or manage classes and students"
-          icon={GraduationCap}
-          buttonText="Manage"
-          buttonIcon={<Users className="h-4 w-4 mr-2" />}
+          title="Create Class"
+          description="Set up a new class and add students"
+          icon={Users}
+          buttonText="Create Class"
           onClick={() => navigateTo('/create-class')}
         />
         
         <ActionCard
-          title="Grade Tasks"
-          description="Review and grade student submissions"
+          title="Check Submissions"
+          description="Review student work and provide feedback"
           icon={ClipboardCheck}
-          buttonText="Grade Assignments"
-          buttonIcon={<ClipboardCheck className="h-4 w-4 mr-2" />}
-          onClick={() => navigateTo('/grade-assignments')}
+          buttonText="Check Tasks"
+          onClick={() => navigateTo('/check-tasks')}
         />
         
         <ActionCard
-          title="Students"
-          description="Manage students in your class"
-          icon={Users}
-          buttonText="Manage Students"
-          buttonIcon={<Users className="h-4 w-4 mr-2" />}
-          onClick={() => navigateTo('/manage-students')}
+          title="Messages"
+          description="View messages from students and parents"
+          icon={MessageCircle}
+          buttonText="View Messages"
+          onClick={() => navigateTo('/teacher-messages')}
         />
         
         <ActionCard
-          title="Schedule"
-          description="Plan and schedule tasks for your class"
-          icon={CalendarDays}
-          buttonText="Schedule Tasks"
-          buttonIcon={<CalendarDays className="h-4 w-4 mr-2" />}
-          onClick={() => navigateTo('/schedule-tasks')}
+          title="Resources"
+          description="Add and manage educational resources for students"
+          icon={BookOpen}
+          buttonText="Manage Resources"
+          onClick={() => navigateTo('/parent-resources')}
         />
       </div>
     </DashboardLayout>

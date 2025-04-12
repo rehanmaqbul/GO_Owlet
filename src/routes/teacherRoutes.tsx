@@ -10,11 +10,17 @@ import TeacherMessages from "@/pages/TeacherMessages";
 import CreateReport from "@/pages/CreateReport";
 import CreateTask from "@/pages/CreateTask";
 import ScheduleTasks from "@/pages/ScheduleTasks";
+import TeacherCreateTask from "@/pages/TeacherCreateTask";
+import ParentResources from "@/pages/ParentResources";
+import GenerateReportPage from "@/pages/GenerateReportPage";
+import ViewSubmissionsPage from '@/pages/ViewSubmissionsPage';
+import EditDeadlinePage from '@/pages/EditDeadlinePage';
+import SendReminderPage from '@/pages/SendReminderPage';
 
 export const teacherRoutes: RouteObject[] = [
   // Protected routes - Teacher
   {
-    path: "/teacher-dashboard",
+    path: "/teacher",
     element: (
       <PrivateRoute allowedRoles={['teacher']}>
         <TeacherDashboard />
@@ -26,6 +32,14 @@ export const teacherRoutes: RouteObject[] = [
     element: (
       <PrivateRoute allowedRoles={['teacher']}>
         <CheckTasksPage />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: "/generate-report",
+    element: (
+      <PrivateRoute allowedRoles={['teacher']}>
+        <GenerateReportPage />
       </PrivateRoute>
     )
   },
@@ -86,11 +100,51 @@ export const teacherRoutes: RouteObject[] = [
     )
   },
   {
+    path: "/teacher-create-task",
+    element: (
+      <PrivateRoute allowedRoles={['teacher']}>
+        <TeacherCreateTask />
+      </PrivateRoute>
+    )
+  },
+  {
     path: "/schedule-tasks",
     element: (
       <PrivateRoute allowedRoles={['teacher']}>
         <ScheduleTasks />
       </PrivateRoute>
     )
-  }
+  },
+  {
+    path: "/parent-resources",
+    element: (
+      <PrivateRoute allowedRoles={['teacher']}>
+        <ParentResources />
+      </PrivateRoute>
+    )
+  },
+  {
+    path: '/view-submissions/:taskId',
+    element: (
+      <PrivateRoute allowedRoles={['teacher']}>
+        <ViewSubmissionsPage />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: '/edit-deadline/:taskId',
+    element: (
+      <PrivateRoute allowedRoles={['teacher']}>
+        <EditDeadlinePage />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: '/send-reminder/:taskId',
+    element: (
+      <PrivateRoute allowedRoles={['teacher']}>
+        <SendReminderPage />
+      </PrivateRoute>
+    ),
+  },
 ];

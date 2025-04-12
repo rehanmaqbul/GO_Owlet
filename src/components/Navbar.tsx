@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/auth';
@@ -34,7 +33,7 @@ const Navbar = () => {
       } else if (user?.role === 'parent') {
         navigate('/parent-dashboard', { replace: true });
       } else if (user?.role === 'child') {
-        navigate('/child-dashboard', { replace: true });
+        navigate('/student', { replace: true });
       }
     }
   }, [isAuthenticated, location.pathname, user?.role, navigate]);
@@ -79,7 +78,7 @@ const Navbar = () => {
       { name: 'Dashboard', path: user?.role === 'admin' ? '/admin-dashboard' : 
                                 user?.role === 'teacher' ? '/teacher-dashboard' :
                                 user?.role === 'parent' ? '/parent-dashboard' :
-                                user?.role === 'child' ? '/child-dashboard' : '/dashboard' },
+                                user?.role === 'child' ? '/student' : '/dashboard' },
     ];
     
     const roleSpecificLinks = {
@@ -97,8 +96,8 @@ const Navbar = () => {
         { name: 'Resources', path: '/parent-resources' },
       ],
       child: [
-        { name: 'My Tasks', path: '/child-tasks' },
-        { name: 'Messages', path: '/child-messages' },
+        { name: 'My Tasks', path: '/student/tasks' },
+        { name: 'Messages', path: '/student/messages' },
       ]
     };
     
@@ -118,7 +117,7 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-6">
-          <Link to={user?.role ? `/${user.role}-dashboard` : '/dashboard'} className="flex items-center space-x-2">
+          <Link to={user?.role === 'child' ? '/student' : (user?.role ? `/${user.role}-dashboard` : '/dashboard')} className="flex items-center space-x-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-owl-blue to-owl-blue-dark flex items-center justify-center">
               <span className="text-white text-xl font-bold">G</span>
             </div>

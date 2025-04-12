@@ -15,7 +15,7 @@ import ParentProgressReports from "@/pages/ParentProgressReports";
 export const parentRoutes: RouteObject[] = [
   // Protected routes - Parent
   {
-    path: "/parent-dashboard",
+    path: "/parent",
     element: (
       <PrivateRoute allowedRoles={['parent']}>
         <ParentDashboard />

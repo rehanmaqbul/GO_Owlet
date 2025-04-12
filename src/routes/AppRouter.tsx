@@ -3,7 +3,8 @@ import { publicRoutes } from "./publicRoutes";
 import { adminRoutes } from "./adminRoutes";
 import { teacherRoutes } from "./teacherRoutes";
 import { parentRoutes } from "./parentRoutes";
-import { sharedRoutes } from "./sharedRoutes";
+import { schoolRoutes } from "./schoolRoutes";
+import { studentRoutes } from "./studentRoutes";
 import NotFound from "@/pages/NotFound";
 
 // Define a catch-all route for the 404 page
@@ -18,11 +19,12 @@ const router = createBrowserRouter([
   ...adminRoutes,
   ...teacherRoutes,
   ...parentRoutes,
-  ...sharedRoutes,
+  ...schoolRoutes,
+  ...studentRoutes,
   notFoundRoute // Add the catch-all route at the end
 ]);
 
 export const AppRouter = () => {
-  console.log("Available routes:", [...publicRoutes, ...adminRoutes, ...teacherRoutes, ...parentRoutes, ...sharedRoutes].map(r => r.path));
+  console.log("Available routes:", [...publicRoutes, ...adminRoutes, ...teacherRoutes, ...parentRoutes, ...schoolRoutes, ...studentRoutes].map(r => r.path));
   return <RouterProvider router={router} />;
 };
